@@ -62,9 +62,9 @@ class __TabsNonScrollableDemoState extends State<_TabsNonScrollableDemo>
 
   @override
   Widget build(BuildContext context) {
-// For the ToDo task hint: consider defining the widget and name of the tabs here
-    final tabs = ['Pet 1', 'Pet 2', 'Pet 3'];
-
+// 
+    final tabs = ['Bunny', 'Cat', 'Duck'];
+    final images = ['bunny','catinbox','ducky'];
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -83,9 +83,14 @@ class __TabsNonScrollableDemoState extends State<_TabsNonScrollableDemo>
         controller: _tabController,
         children: [
 // hint for the to do task:Considering creating the different for different tabs
-          for (final tab in tabs)
+          for (final image in images)
             Center(
-              child: Text(tab),
+              child:
+                Image.asset(
+                'src/images/'+ image + '.png',
+                height: 400,
+                width: 400,
+              ),
             ),
         ],
       ),
