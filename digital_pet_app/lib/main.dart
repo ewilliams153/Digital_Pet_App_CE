@@ -1,103 +1,93 @@
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(RunMyApp());
+  runApp(MyApp());
 }
 
-class RunMyApp extends StatefulWidget {
-  const RunMyApp({super.key});
-
-  @override
-  State<RunMyApp> createState() => _RunMyAppState();
-}
-
-class _RunMyAppState extends State<RunMyApp> {
-  ThemeMode _themeMode = ThemeMode.system;
-
-  // Method to change the theme
-  void changeTheme(ThemeMode themeMode) {
-    setState(() {
-      _themeMode = themeMode;
-    });
-  }
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: ThemeData(
-        colorScheme: ColorScheme.light(
-          primary: Colors.pink,
-          secondary: Colors.amber,
-        ),
-        scaffoldBackgroundColor: Color(0xFFFFD1DC), // Pastel pink
+      home: DefaultTabController(
+        length: 3,
+        child: _TabsNonScrollableDemo(),
       ),
-      darkTheme: ThemeData(
-        colorScheme: ColorScheme.dark(
-          primary: Colors.pink.shade900,
-          secondary: Colors.deepOrange,
-        ),
-        scaffoldBackgroundColor: Color(0xFFB0003C), // Deep pink
-      ),
-      themeMode: _themeMode,
-      debugShowCheckedModeBanner: false,
-      home: ThemeSwitcher(changeTheme: changeTheme, themeMode: _themeMode),
     );
   }
 }
 
-class ThemeSwitcher extends StatelessWidget {
-  final Function(ThemeMode) changeTheme;
-  final ThemeMode themeMode;
+class _TabsNonScrollableDemo extends StatefulWidget {
+  @override
+  __TabsNonScrollableDemoState createState() => __TabsNonScrollableDemoState();
+}
 
-  const ThemeSwitcher({
-    super.key,
-    required this.changeTheme,
-    required this.themeMode,
-  });
+class __TabsNonScrollableDemoState extends State<_TabsNonScrollableDemo>
+    with SingleTickerProviderStateMixin, RestorationMixin {
+  late TabController _tabController;
+
+  final RestorableInt tabIndex = RestorableInt(0);
+
+  @override
+  String get restorationId => 'tab_non_scrollable_demo';
+
+  @override
+  void restoreState(RestorationBucket? oldBucket, bool initialRestore) {
+    registerForRestoration(tabIndex, 'tab_index');
+    _tabController.index = tabIndex.value;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(
+      initialIndex: 0,
+      length: 3,
+      vsync: this,
+    );
+    _tabController.addListener(() {
+      setState(() {
+        tabIndex.value = _tabController.index;
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    tabIndex.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
+// For the ToDo task hint: consider defining the widget and name of the tabs here
+    final tabs = ['Tab 1', 'Tab 2', 'Tab 3'];
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Theme Demo'),
-      ),
-      body: AnimatedContainer(
-        duration: const Duration(milliseconds: 500),
-        color: Theme.of(context).scaffoldBackgroundColor,
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: themeMode == ThemeMode.light
-                      ? Colors.grey[300]
-                      : Colors.white,
-                  borderRadius: BorderRadius.circular(100),
-                ),
-                child: const Text(
-                  'Mobile App Development Testing',
-                  style: TextStyle(fontSize: 18),
-                ),
-              ),
-              const SizedBox(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  ElevatedButton(
-                    onPressed: () => changeTheme(ThemeMode.light),
-                    child: const Text('Light Theme'),
-                  ),
-                  ElevatedButton(
-                    onPressed: () => changeTheme(ThemeMode.dark),
-                    child: const Text('Dark Theme'),
-                  ),
-                ],
-              ),
-            ],
-          ),
+        automaticallyImplyLeading: false,
+        title: Text(
+          'Tabs Demo',
         ),
+        bottom: TabBar(
+          controller: _tabController,
+          isScrollable: false,
+          tabs: [
+            for (final tab in tabs) Tab(text: tab),
+          ],
+        ),
+      ),
+      body: TabBarView(
+        controller: _tabController,
+        children: [
+// hint for the to do task:Considering creating the different for different tabs
+          for (final tab in tabs)
+            Center(
+              child: Text(tab),
+            ),
+        ],
       ),
     );
   }
