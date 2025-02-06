@@ -62,9 +62,9 @@ class __TabsNonScrollableDemoState extends State<_TabsNonScrollableDemo>
 
   @override
   Widget build(BuildContext context) {
-// 
+//
     final tabs = ['Bunny', 'Cat', 'Duck'];
-    final images = ['bunny','catinbox','ducky'];
+    final images = ['bunny', 'catinbox', 'ducky'];
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -85,9 +85,8 @@ class __TabsNonScrollableDemoState extends State<_TabsNonScrollableDemo>
 // hint for the to do task:Considering creating the different for different tabs
           for (final image in images)
             Center(
-              child:
-                Image.asset(
-                'src/images/'+ image + '.png',
+              child: Image.asset(
+                'src/images/$image.png',
                 height: 400,
                 width: 400,
               ),
